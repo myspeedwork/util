@@ -1,0 +1,180 @@
+<?php
+
+/**
+ * This file is part of the Speedwork package.
+ *
+ * (c) 2s Technologies <info@2stech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Speedwork\Util;
+
+/**
+ * @author sankar <sankar.suda@gmail.com>
+ */
+class Pagination
+{
+    protected $target;
+
+    public function setTarget($url = null)
+    {
+        if (empty($url)) {
+            $url = Utility::currentUrl();
+        }
+
+        $prefix = (strpos($url, '?') === false ? '?' : '&');
+
+        if (strpos($url, 'page=', 0) === false) {
+            $url .= $prefix.'page=1';
+        }
+
+        $this->target = $url;
+
+        return $url;
+    }
+
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    public function paginate($page = 1, $total = 0, $limit = 25, $now_total = 0, $ajax = false)
+    {
+        $adjacents    = 1;
+        if (!$limit) {
+            $limit        = 15;
+        }
+        if (!$page) {
+            $page        = 1;
+        }
+
+        $this->setTarget();
+
+        $prev        = $page - 1;
+        $next        = $page + 1;
+        $lastpage    = ceil($total / $limit);
+        $lpm1        = $lastpage - 1;
+
+        $pagination = '';
+
+        if ($ajax) {
+            $pagination .= '<input type="hidden" name="total" value="'.$total.'"/>';
+        }
+
+        $pagination .= '<div class="ui-load-more-results" data-now="'.$now_total.'" ';
+        $pagination .= 'data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
+        $pagination .= 'data-next-page = "'.($page + 1).'"';
+        $pagination .= '>';
+
+        $pagination .= '<ul class="pagination '.(($ajax) ? 'ac-ajax-pagination' : '').'">';
+
+        if ($lastpage > 1) {
+            //previous button
+            if ($page > 1) {
+                $pagination .= $this->linkUrl($prev, '&laquo; prev');
+            } else {
+                $pagination .= '<li class="disabled"><a href="#">&laquo; prev</a></li>';
+            }
+
+            //pages
+            if ($lastpage < 7 + ($adjacents * 2)) {
+                for ($counter = 1; $counter <= $lastpage; $counter++) {
+                    if ($counter == $page) {
+                        $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\" data-page=\"$counter\">$counter</a></li>";
+                    } else {
+                        $pagination .= $this->linkUrl($counter);
+                    }
+                }
+            } elseif ($lastpage >= 7 + ($adjacents * 2)) {
+                if ($page < 2 + ($adjacents * 2)) {
+                    for ($counter = 1; $counter < 4 + ($adjacents * 2); $counter++) {
+                        if ($counter == $page) {
+                            $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\"  data-page=\"$counter\">$counter</a></li>";
+                        } else {
+                            $pagination .= $this->linkUrl($counter);
+                        }
+                    }
+
+                    $pagination .= '<li><a href="#" onclick="return false">...</a></li>';
+                    $pagination .= $this->linkUrl($lpm1);
+                    $pagination .= $this->linkUrl($lastpage);
+                } elseif ($lastpage - ($adjacents * 2) > $page && $page > ($adjacents * 2)) {
+                    $pagination .= $this->linkUrl('1');
+                    $pagination .= $this->linkUrl('2');
+
+                    $pagination .= '<li><a href="#" onclick="return false">...</a></li>';
+                    for ($counter = $page - $adjacents; $counter <= $page + $adjacents; $counter++) {
+                        if ($counter == $page) {
+                            $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\"  data-page=\"$counter\">$counter</a></li>";
+                        } else {
+                            $pagination .= $this->linkUrl($counter);
+                        }
+                    }
+                    $pagination .= '<li><a href="#" onclick="return false">...</a></li>';
+                    $pagination .= $this->linkUrl($lpm1);
+                    $pagination .= $this->linkUrl($lastpage);
+                } else {
+                    $pagination .= $this->linkUrl('1');
+                    $pagination .= $this->linkUrl('2');
+
+                    $pagination .= '<li><a href="#" onclick="return false">...</a></li>';
+                    for ($counter = $lastpage - (1 + ($adjacents * 3)); $counter <= $lastpage; $counter++) {
+                        if ($counter == $page) {
+                            $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\"  data-page=\"$counter\">$counter</a></li>";
+                        } else {
+                            $pagination .= $this->linkUrl($counter, $counter);
+                        }
+                    }
+                }
+            }
+
+            //next button
+            if ($page < $counter - 1) {
+                $pagination .= $this->linkUrl($next, 'next &raquo;');
+            } else {
+                $pagination .= '<li class="disabled"><a href="#">next &raquo;</a></li>';
+            }
+        }
+        $pagination .= '</ul>';
+        $pagination .= '</div>';
+
+        return $pagination;
+    }
+
+    private function linkUrl($find, $print = '')
+    {
+        $url    = preg_replace('#page=([0-9]*)#', 'page='.$find, $this->getTarget());
+
+        $print  = ($print) ?  $print : $find;
+
+        return '<li><a href="'.$url.'"  data-page="'.$find.'">'.$print.'</a></li>';
+    }
+
+    public function paginate2($page = 1, $total = 0, $limit = 10, $now_total = 0)
+    {
+        $data = '';
+        if ($page == 1) {
+            $data .= '<input type="hidden" name="total" value="'.$total.'"/>';
+        }
+
+        $details .= 'data-now="'.$now_total.'" ';
+        $details .= 'data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
+        $details .= 'data-next-page = "'.($page + 1).'"';
+
+        if ($now_total >= $limit) {
+            $data .= '<div class="ui-load-more-results ac-load-more" '.$details.' data-page="'.($page + 1).'" style="cursor:pointer">Show more results...</div>';
+            $data .= '<div class="ui-load-more-results ui-hidden ac-load-more-loading" style="display:none" data-total="'.$total.'">';
+            $data .= '<span class="ui-results-loader"></span>Loading more results...</div>';
+        } else {
+            if ($total > 0) {
+                $data .= '<div class="ui-load-more-results" '.$details.'>No more results to display.</div>';
+            } else {
+                $data .= '<div class="ui-load-more-results" '.$details.'>Sorry no results have been found.</div>';
+            }
+        }
+
+        return $data;
+    }
+}
