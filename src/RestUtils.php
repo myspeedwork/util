@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Speedwork\Util;
 
 /**
@@ -23,9 +22,6 @@ class RestUtils
 
         if ($content_type == 'application/json') {
             header('Content-Disposition: attachment; filename="'.$name.'.json"');
-        }
-
-        if ($content_type == 'text/javascript') {
         }
 
         echo $body;
@@ -89,7 +85,7 @@ class RestUtils
         // get our verb
         $request_method = strtolower($_SERVER['REQUEST_METHOD']);
         // we'll store our data here
-        $data            = [];
+        $data = [];
 
         switch ($request_method) {
             // gets are easy...

@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Speedwork\Util;
 
 use StdClass;
@@ -18,9 +17,20 @@ use StdClass;
  */
 class XML
 {
-    public static function fromObj(StdClass $obj, $node_block = 'nodes', $node_name = 'node')
+    public static function build($data, $block = 'nodes', $name = 'node')
     {
-        return self::fromArray(get_object_vars($obj), $node_block, $node_name);
+        if (is_array($data)) {
+            return static::fromArray($data, $block, $name);
+        }
+
+        if (is_object($data)) {
+            return static::fromObj($data, $block, $name);
+        }
+    }
+
+    public static function fromObj(StdClass $obj, $block = 'nodes', $name = 'node')
+    {
+        return self::fromArray(get_object_vars($obj), $block, $name);
     }
 
     public static function fromArray($array, $node_block = 'nodes', $node_name = 'node')
