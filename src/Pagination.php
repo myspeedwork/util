@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Speedwork\Util;
 
 /**
@@ -17,6 +16,12 @@ namespace Speedwork\Util;
 class Pagination
 {
     protected $target;
+    protected $type;
+
+    public function __construct($type = null)
+    {
+        $this->type = $type;
+    }
 
     public function setTarget($url = null)
     {
@@ -40,22 +45,22 @@ class Pagination
         return $this->target;
     }
 
-    public function paginate($page = 1, $total = 0, $limit = 25, $now_total = 0, $ajax = false)
+    public function paginate($page = 1, $total = 0, $limit = 25, $now_total = 0, $ajax = true)
     {
-        $adjacents    = 1;
+        $adjacents = 1;
         if (!$limit) {
-            $limit        = 15;
+            $limit = 15;
         }
         if (!$page) {
-            $page        = 1;
+            $page = 1;
         }
 
         $this->setTarget();
 
-        $prev        = $page - 1;
-        $next        = $page + 1;
-        $lastpage    = ceil($total / $limit);
-        $lpm1        = $lastpage - 1;
+        $prev     = $page - 1;
+        $next     = $page + 1;
+        $lastpage = ceil($total / $limit);
+        $lpm1     = $lastpage - 1;
 
         $pagination = '';
 
@@ -80,7 +85,7 @@ class Pagination
 
             //pages
             if ($lastpage < 7 + ($adjacents * 2)) {
-                for ($counter = 1; $counter <= $lastpage; $counter++) {
+                for ($counter = 1; $counter <= $lastpage; ++$counter) {
                     if ($counter == $page) {
                         $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\" data-page=\"$counter\">$counter</a></li>";
                     } else {
@@ -89,7 +94,7 @@ class Pagination
                 }
             } elseif ($lastpage >= 7 + ($adjacents * 2)) {
                 if ($page < 2 + ($adjacents * 2)) {
-                    for ($counter = 1; $counter < 4 + ($adjacents * 2); $counter++) {
+                    for ($counter = 1; $counter < 4 + ($adjacents * 2); ++$counter) {
                         if ($counter == $page) {
                             $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\"  data-page=\"$counter\">$counter</a></li>";
                         } else {
@@ -105,7 +110,7 @@ class Pagination
                     $pagination .= $this->linkUrl('2');
 
                     $pagination .= '<li><a href="#" onclick="return false">...</a></li>';
-                    for ($counter = $page - $adjacents; $counter <= $page + $adjacents; $counter++) {
+                    for ($counter = $page - $adjacents; $counter <= $page + $adjacents; ++$counter) {
                         if ($counter == $page) {
                             $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\"  data-page=\"$counter\">$counter</a></li>";
                         } else {
@@ -120,7 +125,7 @@ class Pagination
                     $pagination .= $this->linkUrl('2');
 
                     $pagination .= '<li><a href="#" onclick="return false">...</a></li>';
-                    for ($counter = $lastpage - (1 + ($adjacents * 3)); $counter <= $lastpage; $counter++) {
+                    for ($counter = $lastpage - (1 + ($adjacents * 3)); $counter <= $lastpage; ++$counter) {
                         if ($counter == $page) {
                             $pagination .= "<li class=\"current\"><a href=\"#\" onclick=\"return false\"  data-page=\"$counter\">$counter</a></li>";
                         } else {
@@ -145,9 +150,9 @@ class Pagination
 
     private function linkUrl($find, $print = '')
     {
-        $url    = preg_replace('#page=([0-9]*)#', 'page='.$find, $this->getTarget());
+        $url = preg_replace('#page=([0-9]*)#', 'page='.$find, $this->getTarget());
 
-        $print  = ($print) ?  $print : $find;
+        $print = ($print) ?  $print : $find;
 
         return '<li><a href="'.$url.'"  data-page="'.$find.'">'.$print.'</a></li>';
     }
@@ -176,5 +181,32 @@ class Pagination
         }
 
         return $data;
+    }
+
+    public function render($page, $total, $limit, $current)
+    {
+        $paging = null;
+        if ($this->type == 'mixed' && $total <= 500) {
+            $paging = $this->paginate2($page, $total, $limit, $current);
+        }
+
+        if (null === $paging && $this->type != 'api') {
+            $paging = $this->paginate($page, $total, $limit, $current);
+        }
+
+        $next  = ($current >= $limit) ? $page + 1 : false;
+        $start = $limit * ($page - 1);
+
+        return [
+            'now'        => $current,
+            'next'       => $next,
+            'page'       => $page,
+            'limit'      => $limit,
+            'start'      => $start,
+            'total'      => $total,
+            'pagination' => $paging,
+            'limitstart' => $start,
+            'nowTotal'   => $current,
+        ];
     }
 }

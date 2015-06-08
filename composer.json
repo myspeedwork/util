@@ -13,7 +13,7 @@
         "php" : ">=5.4"
     },
     "autoload" : {
-        "psr-4": { "Speedwork\\Util": "src" }
+        "psr-4": { "Speedwork\\Util\\": "src" }
     },
     "minimum-stability": "dev"
 }
