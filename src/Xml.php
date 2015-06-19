@@ -15,7 +15,7 @@ use StdClass;
 /**
  * @author sankar <sankar.suda@gmail.com>
  */
-class XML
+class Xml
 {
     public static function build($data, $block = 'nodes', $name = 'node')
     {
