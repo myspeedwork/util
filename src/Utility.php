@@ -8,8 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Speedwork\Util;
+
+use Speedwork\Core\Registry;
 
 /**
  * @author sankar <sankar.suda@gmail.com>
@@ -167,7 +168,7 @@ class Utility
         $i        = 0;
         while ($i < $characters) {
             $code .= substr($possible, mt_rand(0, strlen($possible) - 1), 1);
-            $i++;
+            ++$i;
         }
 
         return $code;
@@ -187,7 +188,7 @@ class Utility
         if (strlen($str_to_count) <= $lenght) {
             return $s;
         }
-        $s2  = mb_substr($str_to_count, 0, $lenght - 3, 'utf-8');
+        $s2 = mb_substr($str_to_count, 0, $lenght - 3, 'utf-8');
         $s2 .= '...';
 
         return $s2;
@@ -246,10 +247,10 @@ class Utility
 
     public static function specialchars($str)
     {
-        $char   = ['&','"',"'"];
-        $enti   = ['&amp;','&quot','&#039;'];
-        $str    = str_replace($enti, $char, $str);
-        $str    = str_replace($char, $enti, $str);
+        $char = ['&','"',"'"];
+        $enti = ['&amp;','&quot','&#039;'];
+        $str  = str_replace($enti, $char, $str);
+        $str  = str_replace($char, $enti, $str);
 
         return $str;
     }
@@ -385,17 +386,17 @@ class Utility
     {
         //$m  = round($value/$round)*$round;
         $m  = ceil(intval($value) / $round) * $round;
-        $up =  0.01 * round($i * 100);
+        $up = 0.01 * round($i * 100);
 
         return ['round' => $m,'up' => $up];
     }
 
     public static function parseQuery($var)
     {
-        $var  = parse_url($var, PHP_URL_QUERY);
-        $var  = html_entity_decode($var);
-        $var  = explode('&', $var);
-        $arr  = [];
+        $var = parse_url($var, PHP_URL_QUERY);
+        $var = html_entity_decode($var);
+        $var = explode('&', $var);
+        $arr = [];
 
         foreach ($var as $val) {
             $x          = explode('=', $val);
@@ -450,15 +451,15 @@ class Utility
     public static function parseXmlAttributes($string)
     {
         //Initialize variables
-        $attr       = [];
-        $retarray   = [];
+        $attr     = [];
+        $retarray = [];
 
         // Lets grab all the key/value pairs using a regular expression
         preg_match_all('/([\w:-]+)[\s]?=[\s]?"([^"]*)"/i', $string, $attr);
 
         if (is_array($attr)) {
             $numPairs = count($attr[1]);
-            for ($i = 0; $i < $numPairs; $i++) {
+            for ($i = 0; $i < $numPairs; ++$i) {
                 $retarray[$attr[1][$i]] = $attr[2][$i];
             }
         }
