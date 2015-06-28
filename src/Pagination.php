@@ -194,7 +194,7 @@ class Pagination
             $paging = $this->paginate($page, $total, $limit, $current);
         }
 
-        $next  = ($current >= $limit) ? $page + 1 : false;
+        $next  = ($current >= $limit) ? $page + 1 : 0;
         $start = $limit * ($page - 1);
 
         return [
