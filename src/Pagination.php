@@ -200,7 +200,7 @@ class Pagination
         return [
             'now'        => $current,
             'next'       => $next,
-            'page'       => $page,
+            'page'       => intval($page),
             'limit'      => $limit,
             'start'      => $start,
             'total'      => $total,

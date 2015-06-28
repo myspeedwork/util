@@ -81,30 +81,34 @@ class RestUtils
 
     public static function processRequest()
     {
-        return $_REQUEST;
-        // get our verb
-        $request_method = strtolower($_SERVER['REQUEST_METHOD']);
-        // we'll store our data here
         $data = [];
+        $data = array_merge_recursive($data, $_GET);
+        $data = array_merge_recursive($data, $_POST);
 
-        switch ($request_method) {
-            // gets are easy...
-            case 'get':
-                $data = $_GET;
+        $body = file_get_contents('php://input');
+        if ($body) {
+            $content_type = false;
+            if (isset($_SERVER['CONTENT_TYPE'])) {
+                $content_type = strtolower($_SERVER['CONTENT_TYPE']);
+                $content_type = explode(';', $content_type);
+                $content_type = $content_type[0];
+            }
+        }
+
+        switch ($content_type) {
+            case 'application/json':
+                $body = json_decode($body, true);
                 break;
-            // so are posts
-            case 'post':
-                $data = $_POST;
-                break;
-            // here's the tricky bit...
-            case 'put':
-                // basically, we read a string from PHP's special input location,
-                // and then parse it out into an array via parse_str... per the PHP docs:
-                // Parses str  as if it were the query string passed via a URL and sets
-                // variables in the current scope.
-                parse_str(file_get_contents('php://input'), $data);
+            case 'application/x-www-form-urlencoded':
+                parse_str($body, $body);
                 break;
         }
+
+        if (is_array($body)) {
+            $data = array_merge_recursive($data, $body);
+        }
+
+        unset($body);
 
         return $data;
     }
