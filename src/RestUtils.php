@@ -99,9 +99,6 @@ class RestUtils
             case 'application/json':
                 $body = json_decode($body, true);
                 break;
-            case 'application/x-www-form-urlencoded':
-                parse_str($body, $body);
-                break;
         }
 
         if (is_array($body)) {

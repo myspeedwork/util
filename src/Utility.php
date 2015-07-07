@@ -10,8 +10,6 @@
  */
 namespace Speedwork\Util;
 
-use Speedwork\Core\Registry;
-
 /**
  * @author sankar <sankar.suda@gmail.com>
  */
@@ -75,25 +73,6 @@ class Utility
     }
 
     /**
-     * remove unwanted strings from string.
-     *
-     * @param [type] $name [description]
-     *
-     * @return [type] [description]
-     */
-    public static function clearUnWanted($name)
-    {
-        $unwantedChars['in'] = [',',"'",'"','...','!'];
-        $name                = str_replace($unwantedChars['in'], '', $name);
-        $name                = str_replace(' ', '-', $name);
-        $name                = str_replace('&', '&amp;', $name);
-        $name                = trim($name);
-        $name                = stripslashes($name);
-
-        return $name;
-    }
-
-    /**
      * make name process to store in folders.
      *
      * @param [type] $title   [description]
@@ -148,7 +127,7 @@ class Utility
      *
      * @return bool [description]
      */
-    public static function is_real_email_address($email)
+    public static function isRealEmail($email)
     {
         return (bool) (preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $email));
     }
@@ -194,57 +173,6 @@ class Utility
         return $s2;
     }
 
-    /**
-     * redirect the url.
-     *
-     * @param [type] $url  [description]
-     * @param int    $time [description]
-     * @param bool   $html [description]
-     *
-     * @return [type] [description]
-     */
-    public static function redirect($url, $time = 0, $html = false, $overwrite = false)
-    {
-        $url = str_replace('com_', '', $url);
-
-        $is_ajax_request = Registry::get('is_ajax_request');
-        if ($is_ajax_request) {
-            $template = Registry::get('template');
-
-            $status = $template->release('status');
-
-            // check already redirect exists
-            $redirect = Registry::get('redirect');
-            if ($redirect && $overwrite === false) {
-                $url = $redirect;
-            }
-
-            $status['redirect'] = $url;
-            $template->assign('status', $status);
-            $template->assign('redirect', $url);
-            Registry::set('redirect', $url);
-
-            return true;
-        }
-
-        if ($html || headers_sent()) {
-            echo  '<meta http-equiv="refresh" content="'.$time.'; url='.$url.'"/>';
-
-            return true;
-        }
-
-        if ($time) {
-            header('refresh:'.$time.';url='.str_replace('&amp;', '&', $url));
-        } else {
-            header('location:'.str_replace('&amp;', '&', $url));
-        }
-    }
-
-    public static function location($url, $time = 0)
-    {
-        header('location:'.str_replace('&amp;', '&', $url), $time);
-    }
-
     public static function specialchars($str)
     {
         $char = ['&','"',"'"];
@@ -258,20 +186,6 @@ class Utility
     public static function cleanPath($path)
     {
         return realpath($path);
-    }
-
-    public static function get_include_contents($filename)
-    {
-        if (is_file($filename)) {
-            ob_start();
-            include $filename;
-            $contents = ob_get_contents();
-            ob_end_clean();
-
-            return $contents;
-        }
-
-        return false;
     }
 
     public static function is_ssl()
