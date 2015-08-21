@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Speedwork\Util;
 
 /**
@@ -21,6 +22,13 @@ class Pagination
     public function __construct($type = null)
     {
         $this->type = $type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
     public function setTarget($url = null)
@@ -37,7 +45,7 @@ class Pagination
 
         $this->target = $url;
 
-        return $url;
+        return $this;
     }
 
     public function getTarget()
@@ -198,15 +206,15 @@ class Pagination
         $start = $limit * ($page - 1);
 
         return [
-            'now'        => $current,
-            'next'       => $next,
+            'now'        => intval($current),
+            'next'       => intval($next),
             'page'       => intval($page),
-            'limit'      => $limit,
-            'start'      => $start,
-            'total'      => $total,
+            'limit'      => intval($limit),
+            'start'      => intval($start),
+            'total'      => intval($total),
             'pagination' => $paging,
-            'limitstart' => $start,
-            'nowTotal'   => $current,
+            'limitstart' => intval($start),
+            'nowTotal'   => intval($current),
         ];
     }
 }

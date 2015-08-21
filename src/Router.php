@@ -32,19 +32,25 @@ class Router
      *
      * @return string return the complete with without domain
      */
-    public static function link($url, $amp = true, $ssl = false, $rewrite = true)
+    public static function link($link, $amp = false, $ssl = false, $rewrite = true)
     {
-        if ($rewrite) {
-            foreach (static::$_rewrite as $re) {
-                $url = $re->rewrite($url);
-            }
-        } else {
-            $url = static::fixLink($url);
+        if (!preg_match('/:\/\//', $link)
+            && substr($link, 0, 2) != '//') {
+            $url = _URL;
         }
 
-        if (!preg_match('/(https?):\/\//', $url)
-            && substr($url, 0, 2) != '//') {
-            $url = _URL.$url;
+        if ($link == 'index.php'
+            || $link == '/index.php'
+            || $link == 'index.html'
+            || $link == '/') {
+            return $url;
+        }
+
+        $link = static::fixLink($link);
+        if ($rewrite) {
+            foreach (static::$_rewrite as $re) {
+                $url = $re->rewrite($link, $url);
+            }
         }
 
         if ($amp) {
@@ -84,7 +90,10 @@ class Router
 
         if (!preg_match('/(https?):\/\//', $url) && substr($url, 0, 2) != '//') {
             if (substr($url, 0, 5) != 'index' && substr($url, 0, 6) != '/index') {
-                $split   = explode('&', $url, 2);
+                $split = explode('?', $url, 2);
+                if (empty($split[1])) {
+                    $split = explode('&', $url, 2);
+                }
                 $details = explode('/', $split[0]);
                 $url     = 'index.php?option='.$details[0];
                 if ($details[1]) {
