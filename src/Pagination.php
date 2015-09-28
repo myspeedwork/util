@@ -167,7 +167,7 @@ class Pagination
 
     public function paginate2($page = 1, $total = 0, $limit = 10, $now_total = 0)
     {
-        $data = '';
+        $data = '<div class="pagination pagination-minimal">';
         if ($page == 1) {
             $data .= '<input type="hidden" name="total" value="'.$total.'"/>';
         }
@@ -177,16 +177,18 @@ class Pagination
         $details .= 'data-next-page = "'.($page + 1).'"';
 
         if ($now_total >= $limit) {
-            $data .= '<div class="ui-load-more-results ac-load-more" '.$details.' data-page="'.($page + 1).'" style="cursor:pointer">Show more results...</div>';
-            $data .= '<div class="ui-load-more-results ui-hidden ac-load-more-loading" style="display:none" data-total="'.$total.'">';
+            $data .= '<div class="ui-load-more-results pagination-show-more ac-load-more" '.$details.' data-page="'.($page + 1).'" style="cursor:pointer">Show more results...</div>';
+            $data .= '<div class="ui-load-more-results pagination-showing-more ac-load-more-loading" style="display:none" data-total="'.$total.'">';
             $data .= '<span class="ui-results-loader"></span>Loading more results...</div>';
         } else {
             if ($total > 0) {
-                $data .= '<div class="ui-load-more-results" '.$details.'>No more results to display.</div>';
+                $data .= '<div class="ui-load-more-results pagination-finished" '.$details.'><span>No more results to display.</span></div>';
             } else {
-                $data .= '<div class="ui-load-more-results" '.$details.'>Sorry no results have been found.</div>';
+                $data .= '<div class="ui-load-more-results pagination-results" '.$details.'><span>Sorry no results found.</span></div>';
             }
         }
+
+        $data .= '</div>';
 
         return $data;
     }

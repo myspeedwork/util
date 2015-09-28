@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Speedwork\Util;
 
 /**
@@ -283,11 +284,6 @@ class Utility
         return $ip;
     }
 
-    public static function sessionid()
-    {
-        return $_COOKIE[session_name()];
-    }
-
     public static function shuffle_assoc($array)
     {
         $keys = array_keys($array);
@@ -379,18 +375,6 @@ class Utility
         }
 
         return $retarray;
-    }
-
-    public static function symlink($source, $dest)
-    {
-        if ($_SERVER['WINDIR'] || $_SERVER['windir']) {
-            $source = str_replace('/', '\\', $source);
-            $dest   = str_replace('/', '\\', $dest);
-
-            return exec('mklink /j "'.$dest.'" "'.$source.'"');
-        } else {
-            return symlink($source, $dest);
-        }
     }
 
     public static function ipMatch($allowed = [])
