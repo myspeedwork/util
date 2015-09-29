@@ -343,18 +343,6 @@ class Str
     }
 
     /**
-     * Get the singular form of an English word.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    public static function singular($value)
-    {
-        return Pluralizer::singular($value);
-    }
-
-    /**
      * Generate a URL friendly "slug" from a given string.
      *
      * @param string $title
