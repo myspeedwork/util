@@ -3,7 +3,7 @@
 /**
  * This file is part of the Speedwork package.
  *
- * (c) 2s Technologies <info@2stechno.com>
+ * @link http://github.com/speedwork
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -78,7 +78,7 @@ class Pagination
 
         $pagination .= '<div class="ui-load-more-results" data-now="'.$now_total.'" ';
         $pagination .= 'data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
-        $pagination .= 'data-next-page = "'.($page + 1).'"';
+        $pagination .= ' data-next-page = "'.($page + 1).'"';
         $pagination .= '>';
 
         $pagination .= '<ul class="pagination '.(($ajax) ? 'ac-ajax-pagination' : '').'">';
