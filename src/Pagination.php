@@ -172,7 +172,7 @@ class Pagination
             $data .= '<input type="hidden" name="total" value="'.$total.'"/>';
         }
 
-        $details .= 'data-now="'.$now_total.'" ';
+        $details = 'data-now="'.$now_total.'" ';
         $details .= 'data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
         $details .= 'data-next-page = "'.($page + 1).'"';
 
