@@ -172,9 +172,9 @@ class Pagination
             $data .= '<input type="hidden" name="total" value="'.$total.'"/>';
         }
 
-        $details = 'data-now="'.$now_total.'" ';
-        $details .= 'data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
-        $details .= 'data-next-page = "'.($page + 1).'"';
+        $details = 'data-now="'.$now_total.'"';
+        $details .= ' data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
+        $details .= ' data-next-page = "'.($page + 1).'"';
 
         if ($now_total >= $limit) {
             $data .= '<div class="ui-load-more-results pagination-show-more ac-load-more" '.$details.' data-page="'.($page + 1).'" style="cursor:pointer">Show more results...</div>';
