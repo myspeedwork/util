@@ -11,6 +11,8 @@
 
 namespace Speedwork\Util;
 
+use Speedwork\Config\Configure;
+
 /**
  * @author sankar <sankar.suda@gmail.com>
  */
