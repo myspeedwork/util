@@ -176,42 +176,6 @@ class Utility
         return $s2;
     }
 
-    public static function specialchars($str)
-    {
-        $char = ['&','"',"'"];
-        $enti = ['&amp;','&quot','&#039;'];
-        $str  = str_replace($enti, $char, $str);
-        $str  = str_replace($char, $enti, $str);
-
-        return $str;
-    }
-
-    public static function cleanPath($path)
-    {
-        return realpath($path);
-    }
-
-    public static function is_ssl()
-    {
-        if (isset($_SERVER['HTTPS'])) {
-            if ('on' == strtolower($_SERVER['HTTPS'])) {
-                return true;
-            }
-            if ('1' == $_SERVER['HTTPS']) {
-                return true;
-            }
-        } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function uniq_id($limit = 10, $prefix = '')
-    {
-        return $prefix.substr(uniqid(rand(), true), 0, $limit);
-    }
-
     public static function currentUrl()
     {
         $pageURL = 'http';
@@ -236,12 +200,12 @@ class Utility
             $ext        = strtolower($path_parts['extension']);
             switch ($ext) {
                 case 'pdf':
-                header('Content-type: application/pdf'); // add here more headers for diff. extensions
-                header('Content-Disposition: attachment; filename="'.$path_parts['basename'].'"'); // use 'attachment' to force a download
-                break;
-                default;
-                header('Content-type: application/octet-stream');
-                header('Content-Disposition: filename="'.$path_parts['basename'].'"');
+                    header('Content-type: application/pdf'); // add here more headers for diff. extensions
+                    header('Content-Disposition: attachment; filename="'.$path_parts['basename'].'"'); // use 'attachment' to force a download
+                    break;
+                default:
+                    header('Content-type: application/octet-stream');
+                    header('Content-Disposition: filename="'.$path_parts['basename'].'"');
             }
             header("Content-length: $fsize");
             header('Cache-control: private'); //use this to open files directly
@@ -265,9 +229,9 @@ class Utility
 
         if (empty($ip) && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             if (preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses)) {
-                foreach ($addresses[0] as $key => $val) {
-                    if (!preg_match("#^(10|172\.16|192\.168)\.#", $val)) {
-                        $ip = $val;
+                foreach ($addresses[0] as $address) {
+                    if (!preg_match("#^(10|172\.16|192\.168)\.#", $address)) {
+                        $ip = $address;
                         break;
                     }
                 }
@@ -284,23 +248,6 @@ class Utility
         $ip = preg_replace('#([^.0-9 ]*)#', '', $ip);
 
         return $ip;
-    }
-
-    public static function shuffle_assoc($array)
-    {
-        $keys = array_keys($array);
-        shuffle($keys);
-
-        return array_merge(array_flip($keys), $array);
-    }
-
-    public static function roundUp($value, $round = 5)
-    {
-        //$m  = round($value/$round)*$round;
-        $m  = ceil(intval($value) / $round) * $round;
-        $up = 0.01 * round($i * 100);
-
-        return ['round' => $m,'up' => $up];
     }
 
     public static function parseQuery($var)
@@ -328,29 +275,6 @@ class Utility
         curl_close($ch);
 
         return $output;
-    }
-
-    public static function sanitize($option, $type = 'component')
-    {
-        if ($type == 'module') {
-            return self::sanitizeModule($option);
-        }
-
-        return self::sanitizeOption($option);
-    }
-
-    public static function sanitizeOption($option)
-    {
-        $option = strtolower($option);
-
-        return (!empty($option) && strpos($option, 'com_') === false && strpos($option, 'mod_') === false) ? 'com_'.$option : $option;
-    }
-
-    public static function sanitizeModule($option)
-    {
-        $option = strtolower($option);
-
-        return (!empty($option) && strpos($option, 'mod_') === false) ? 'mod_'.$option : $option;
     }
 
     /**
@@ -464,36 +388,6 @@ class Utility
         }
 
         return $dates;
-    }
-
-    public static function stripTags($data, $ignore = [])
-    {
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                if (in_array($key, $ignore)) {
-                    $data[$key] = $value;
-                    continue;
-                }
-                $data[$key] = self::stripTags($value, $ignore);
-            }
-        } else {
-            $data = strip_tags($data);
-        }
-
-        return $data;
-    }
-
-    public static function xSafe($data, $encoding = 'UTF-8')
-    {
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $data[$key] = self::xSafe($value, $encoding);
-            }
-        } else {
-            $data = htmlspecialchars($data, ENT_QUOTES | ENT_HTML401, $encoding);
-        }
-
-        return $data;
     }
 
     public static function joinFiles(array $files, $result, $delete = false)

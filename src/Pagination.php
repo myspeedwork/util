@@ -72,14 +72,14 @@ class Pagination
 
         $pagination = '';
 
-        if ($ajax) {
-            $pagination .= '<input type="hidden" name="total" value="'.$total.'"/>';
-        }
-
         $pagination .= '<div class="ui-load-more-results" data-now="'.$now_total.'" ';
         $pagination .= 'data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
-        $pagination .= ' data-next-page = "'.($page + 1).'"';
+        $pagination .= ' data-next-page = "'.($next).'"';
+        $pagination .= ' data-prev-page = "'.($prev).'"';
         $pagination .= '>';
+
+        $pagination .= '<input type="hidden" id="total" name="total" value="'.$total.'"/>';
+        $pagination .= '<input type="hidden" id="page" name="page" value="'.$page.'"/>';
 
         $pagination .= '<ul class="pagination '.(($ajax) ? 'ac-ajax-pagination' : '').'">';
 
@@ -168,15 +168,14 @@ class Pagination
     public function paginate2($page = 1, $total = 0, $limit = 10, $now_total = 0)
     {
         $data = '<div class="pagination pagination-minimal">';
-        if ($page == 1) {
-            $data .= '<input type="hidden" name="total" value="'.$total.'"/>';
-        }
+        $data .= '<input type="hidden" id="total" name="total" value="'.$total.'"/>';
+        $data .= '<input type="hidden" id="page" name="page" value="'.$page.'"/>';
 
         $details = 'data-now="'.$now_total.'"';
         $details .= ' data-total="'.$total.'" data-limit="'.$limit.'" data-current-page="'.$page.'"';
         $details .= ' data-next-page = "'.($page + 1).'"';
 
-        if ($now_total >= $limit) {
+        if ($total && $now_total >= $limit) {
             $data .= '<div class="ui-load-more-results pagination-show-more ac-load-more" '.$details.' data-page="'.($page + 1).'" style="cursor:pointer">Show more results...</div>';
             $data .= '<div class="ui-load-more-results pagination-showing-more ac-load-more-loading" style="display:none" data-total="'.$total.'">';
             $data .= '<span class="ui-results-loader"></span>Loading more results...</div>';
@@ -214,7 +213,7 @@ class Pagination
             'limit'      => intval($limit),
             'start'      => intval($start),
             'total'      => intval($total),
-            'pagination' => $paging,
+            'html'       => $paging,
             'limitstart' => intval($start),
             'nowTotal'   => intval($current),
         ];
