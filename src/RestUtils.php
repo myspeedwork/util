@@ -16,7 +16,7 @@ namespace Speedwork\Util;
  */
 class RestUtils
 {
-    public static function sendResponse(&$body = '', $content_type = 'text/html')
+    public static function sendResponse($body = '', $content_type = 'text/html')
     {
         // set the content type
         header('Content-type: '.$content_type.'; charset=utf8');
