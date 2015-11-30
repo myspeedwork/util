@@ -341,14 +341,14 @@ class Utility
 
     public static function strtotime($time, $date = false, $format = 'Y-m-d')
     {
-        $convert = Configure::read('datesettings.convert');
-
         if (!is_numeric($time)) {
             $parts = explode('/', $time);
 
             if ($parts[0] && strlen($parts[0]) != 4) {
                 $time = str_replace('/', '-', trim($time));
             }
+
+            $convert = Configure::read('datesettings.convert');
 
             if ($convert) {
                 $time = strtotime($time.' '.$convert);
