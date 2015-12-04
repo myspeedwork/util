@@ -387,7 +387,12 @@ class Utility
             $current = strtotime($step, $current);
         }
 
-        return $dates;
+        // Fix if first day > last day
+        if (date($format, $current) == date($format, $last)) {
+            $dates[] = date($format, $current);
+        }
+
+        return array_unique($dates);
     }
 
     public static function joinFiles(array $files, $result, $delete = false)
