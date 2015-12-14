@@ -11,8 +11,6 @@
 
 namespace Speedwork\Util;
 
-use Speedwork\Config\Configure;
-
 /**
  * @author sankar <sankar.suda@gmail.com>
  */
@@ -179,14 +177,14 @@ class Utility
     public static function currentUrl()
     {
         $pageURL = 'http';
-        if ($_SERVER['HTTPS'] == 'on') {
+        if (env('HTTPS') == 'on') {
             $pageURL .= 's';
         }
         $pageURL .= '://';
-        if ($_SERVER['SERVER_PORT'] != '80') {
-            $pageURL .= $_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
+        if (env('SERVER_PORT') != '80') {
+            $pageURL .= env('SERVER_NAME').':'.env('SERVER_PORT').env('REQUEST_URI');
         } else {
-            $pageURL .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+            $pageURL .= env('SERVER_NAME').env('REQUEST_URI');
         }
 
         return $pageURL;
@@ -225,10 +223,10 @@ class Utility
     public static function ip()
     {
         $ip = '';
-        $ip = $_SERVER['REMOTE_ADDR'];
+        $ip = env('REMOTE_ADDR');
 
-        if (empty($ip) && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            if (preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses)) {
+        if (empty($ip) && env('HTTP_X_FORWARDED_FOR')) {
+            if (preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", env('HTTP_X_FORWARDED_FOR'), $addresses)) {
                 foreach ($addresses[0] as $address) {
                     if (!preg_match("#^(10|172\.16|192\.168)\.#", $address)) {
                         $ip = $address;
@@ -239,10 +237,10 @@ class Utility
         }
 
         if (empty($ip)) {
-            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-                $ip = $_SERVER['REMOTE_ADDR'];
+            if (env('HTTP_CLIENT_IP')) {
+                $ip = env('HTTP_CLIENT_IP');
+            } elseif (env('REMOTE_ADDR')) {
+                $ip = env('REMOTE_ADDR');
             }
         }
         $ip = preg_replace('#([^.0-9 ]*)#', '', $ip);
@@ -348,7 +346,7 @@ class Utility
                 $time = str_replace('/', '-', trim($time));
             }
 
-            $convert = Configure::read('datesettings.convert');
+            $convert = config('app.datesettings.convert');
 
             if ($convert) {
                 $time = strtotime($time.' '.$convert);

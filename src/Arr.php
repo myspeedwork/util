@@ -163,7 +163,7 @@ class Arr
             }
         }
 
-        return value($default);
+        return Str::value($default);
     }
 
     /**
@@ -247,7 +247,7 @@ class Arr
 
         foreach (explode('.', $key) as $segment) {
             if (!is_array($array) || !array_key_exists($segment, $array)) {
-                return value($default);
+                return Str::value($default);
             }
 
             $array = $array[$segment];
