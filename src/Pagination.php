@@ -199,6 +199,18 @@ class Pagination
             $paging = $this->paginate2($page, $total, $limit, $current);
         }
 
+        if ($this->type == 'mixed' && $total >= 500) {
+            $paging = $this->paginate($page, $total, $limit, $current);
+        }
+
+        if ($this->type == 'normal') {
+            $paging = $this->paginate($page, $total, $limit, $current);
+        }
+
+        if ($this->type == 'scroll') {
+            $paging = $this->paginate2($page, $total, $limit, $current);
+        }
+
         if (null === $paging && $this->type != 'api') {
             $paging = $this->paginate($page, $total, $limit, $current);
         }
