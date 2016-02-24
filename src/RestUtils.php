@@ -27,8 +27,8 @@ class RestUtils
     public static function processRequest()
     {
         $data = [];
-        $data = array_merge_recursive($data, $_GET);
-        $data = array_merge_recursive($data, $_POST);
+        $data = array_replace_recursive($data, $_GET);
+        $data = array_replace_recursive($data, $_POST);
 
         $body = file_get_contents('php://input');
         if ($body) {
