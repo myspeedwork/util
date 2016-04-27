@@ -182,9 +182,9 @@ class Utility
         }
         $pageURL .= '://';
         if (env('SERVER_PORT') != '80') {
-            $pageURL .= env('SERVER_NAME').':'.env('SERVER_PORT').env('REQUEST_URI');
+            $pageURL .= env('HTTP_HOST').':'.env('SERVER_PORT').env('REQUEST_URI');
         } else {
-            $pageURL .= env('SERVER_NAME').env('REQUEST_URI');
+            $pageURL .= env('HTTP_HOST').env('REQUEST_URI');
         }
 
         return $pageURL;
