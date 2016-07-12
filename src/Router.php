@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Speedwork\Util;
 
 /**
@@ -32,7 +33,7 @@ class Router
      *
      * @return string return the complete with without domain
      */
-    public static function link($link, $amp = false, $ssl = false, $rewrite = true)
+    public static function link($link, $ssl = false, $rewrite = true)
     {
         if (!preg_match('/:\/\//', $link)
             && substr($link, 0, 2) != '//') {
@@ -53,25 +54,21 @@ class Router
             }
         }
 
-        if ($amp) {
-            $url = Utility::specialchars($url);
-        }
-
-        if ($ssl) {
-            $url = str_replace('http://', 'https://', $url);
-        }
-
-        return $url;
+        return self::fix($url, $ssl);
     }
 
-    public static function fix($url)
+    public static function fix($url, $ssl = false)
     {
-        if (!preg_match('/(https?):\/\//', $url)) {
+        if (!preg_match('/^(https?):\/\//', $url)) {
             if (substr($url, 0, 2) != '//') {
                 $url = 'http://'.$url;
             } else {
                 $url = 'http:'.$url;
             }
+        }
+
+        if ($ssl) {
+            $url = str_replace('http://', 'https://', $url);
         }
 
         return $url;
@@ -109,7 +106,7 @@ class Router
     }
 
     /**
-     * add rewrite methods to process url.
+     * Add rewrite methods to process url.
      *
      * @param null $rewrite
      */

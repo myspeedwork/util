@@ -164,11 +164,11 @@ class Utility
      */
     public static function fewchars($s, $lenght)
     {
-        $str_to_count = strip_tags($s);
-        if (strlen($str_to_count) <= $lenght) {
+        $count = strip_tags($s);
+        if (strlen($count) <= $lenght) {
             return $s;
         }
-        $s2 = mb_substr($str_to_count, 0, $lenght - 3, 'utf-8');
+        $s2 = mb_substr($count, 0, $lenght - 3, 'utf-8');
         $s2 .= '...';
 
         return $s2;
@@ -222,7 +222,6 @@ class Utility
      */
     public static function ip()
     {
-        $ip = '';
         $ip = env('REMOTE_ADDR');
 
         if (empty($ip) && env('HTTP_X_FORWARDED_FOR')) {
