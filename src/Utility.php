@@ -6,9 +6,8 @@
  * @link http://github.com/speedwork
  *
  * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * file that was distributed with this source code
  */
-
 namespace Speedwork\Util;
 
 /**
@@ -86,7 +85,7 @@ class Utility
     {
         // replaces every unwanted character form a string with - ;
         $arrStupid = ['feat.', 'feat', '.com', '(tm)', ' ', '*', "'s",  '"', ',', ':', ';', '@', '#', '(', ')', '?', '!', '_',
-                             '$','+', '=', '|', "'", '/', '~', '`s', '`', '\\', '^', '[',']','{', '}', '<', '>', '%', '.', ];
+                             '$', '+', '=', '|', "'", '/', '~', '`s', '`', '\\', '^', '[', ']', '{', '}', '<', '>', '%', '.', ];
 
         $title = htmlentities($title);
         $title = str_replace($arrStupid, ' ', $title);
@@ -218,7 +217,7 @@ class Utility
     /**
      * Fetch the IP address of the current visitor.
      *
-     * @return string The IP address.
+     * @return string The IP address
      */
     public static function ip()
     {

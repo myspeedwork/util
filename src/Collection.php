@@ -145,7 +145,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return static
      *
-     * @deprecated since version 5.1. Use pluck instead.
+     * @deprecated since version 5.1. Use pluck instead
      */
     public function fetch($key)
     {
@@ -575,9 +575,9 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param int $amount
      *
-     * @return mixed
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return mixed
      */
     public function random($amount = 1)
     {
@@ -729,7 +729,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         $items = $this->items;
 
         $callback ? uasort($items, $callback) : uasort($items, function ($a, $b) {
-
             if ($a == $b) {
                 return 0;
             }
@@ -942,7 +941,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     {
         return array_map(function ($value) {
             return $value;
-
         }, $this->items);
     }
 
