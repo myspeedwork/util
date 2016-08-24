@@ -127,7 +127,7 @@ class Arr
      *
      * @return array
      *
-     * @deprecated since version 5.1. Use pluck instead.
+     * @deprecated since version 5.1. Use pluck instead
      */
     public static function fetch($array, $key)
     {
@@ -191,7 +191,9 @@ class Arr
     {
         $return = [];
 
-        array_walk_recursive($array, function ($x) use (&$return) { $return[] = $x; });
+        array_walk_recursive($array, function ($x) use (&$return) {
+            $return[] = $x;
+        });
 
         return $return;
     }

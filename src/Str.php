@@ -234,9 +234,9 @@ class Str
      *
      * @param int $length
      *
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     public static function random($length = 16)
     {
@@ -258,9 +258,9 @@ class Str
      *
      * @param int $length
      *
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     public static function randomBytes($length = 16)
     {
@@ -512,12 +512,12 @@ class Str
      * Tokenizes a string using $separator, ignoring any instance of $separator that appears between
      * $leftBound and $rightBound.
      *
-     * @param string $data       The data to tokenize.
-     * @param string $separator  The token to split the data on.
-     * @param string $leftBound  The left boundary to ignore separators in.
-     * @param string $rightBound The right boundary to ignore separators in.
+     * @param string $data       The data to tokenize
+     * @param string $separator  The token to split the data on
+     * @param string $leftBound  The left boundary to ignore separators in
+     * @param string $rightBound The right boundary to ignore separators in
      *
-     * @return mixed Array of tokens in $data or original input if empty.
+     * @return mixed Array of tokens in $data or original input if empty
      */
     public static function tokenize($data, $separator = ',', $leftBound = '(', $rightBound = ')')
     {
@@ -546,21 +546,21 @@ class Str
             }
             if ($tmpOffset !== -1) {
                 $buffer .= substr($data, $offset, ($tmpOffset - $offset));
-                if (!$depth && $data{$tmpOffset} === $separator) {
+                if (!$depth && $data[$tmpOffset] === $separator) {
                     $results[] = $buffer;
                     $buffer    = '';
                 } else {
-                    $buffer .= $data{$tmpOffset};
+                    $buffer .= $data[$tmpOffset];
                 }
                 if ($leftBound !== $rightBound) {
-                    if ($data{$tmpOffset} === $leftBound) {
+                    if ($data[$tmpOffset] === $leftBound) {
                         ++$depth;
                     }
-                    if ($data{$tmpOffset} === $rightBound) {
+                    if ($data[$tmpOffset] === $rightBound) {
                         --$depth;
                     }
                 } else {
-                    if ($data{$tmpOffset} === $leftBound) {
+                    if ($data[$tmpOffset] === $leftBound) {
                         if (!$open) {
                             ++$depth;
                             $open = true;
@@ -673,8 +673,8 @@ class Str
      * is to replace all whitespace and unneeded markup around placeholders that did not get replaced
      * by Text::insert().
      *
-     * @param string $str     String to clean.
-     * @param array  $options Options list.
+     * @param string $str     String to clean
+     * @param array  $options Options list
      *
      * @return string
      *
@@ -746,10 +746,10 @@ class Str
      * - `indent` String to indent with. Defaults to null.
      * - `indentAt` 0 based index to start indenting at. Defaults to 0.
      *
-     * @param string    $text    The text to format.
-     * @param array|int $options Array of options to use, or an integer to wrap the text to.
+     * @param string    $text    The text to format
+     * @param array|int $options Array of options to use, or an integer to wrap the text to
      *
-     * @return string Formatted text.
+     * @return string Formatted text
      */
     public static function wrap($text, $options = [])
     {
@@ -801,10 +801,10 @@ class Str
      * - `indent` String to indent with. Defaults to null.
      * - `indentAt` 0 based index to start indenting at. Defaults to 0.
      *
-     * @param string    $text    The text to format.
-     * @param array|int $options Array of options to use, or an integer to wrap the text to.
+     * @param string    $text    The text to format
+     * @param array|int $options Array of options to use, or an integer to wrap the text to
      *
-     * @return string Formatted text.
+     * @return string Formatted text
      */
     public static function wrapBlock($text, $options = [])
     {
@@ -849,12 +849,12 @@ class Str
     /**
      * Unicode and newline aware version of wordwrap.
      *
-     * @param string $text  The text to format.
-     * @param int    $width The width to wrap to. Defaults to 72.
-     * @param string $break The line is broken using the optional break parameter. Defaults to '\n'.
-     * @param bool   $cut   If the cut is set to true, the string is always wrapped at the specified width.
+     * @param string $text  The text to format
+     * @param int    $width The width to wrap to. Defaults to 72
+     * @param string $break The line is broken using the optional break parameter. Defaults to '\n'
+     * @param bool   $cut   If the cut is set to true, the string is always wrapped at the specified width
      *
-     * @return string Formatted text.
+     * @return string Formatted text
      */
     public static function wordWrap($text, $width = 72, $break = "\n", $cut = false)
     {
@@ -869,12 +869,12 @@ class Str
     /**
      * Unicode aware version of wordwrap as helper method.
      *
-     * @param string $text  The text to format.
-     * @param int    $width The width to wrap to. Defaults to 72.
-     * @param string $break The line is broken using the optional break parameter. Defaults to '\n'.
-     * @param bool   $cut   If the cut is set to true, the string is always wrapped at the specified width.
+     * @param string $text  The text to format
+     * @param int    $width The width to wrap to. Defaults to 72
+     * @param string $break The line is broken using the optional break parameter. Defaults to '\n'
+     * @param bool   $cut   If the cut is set to true, the string is always wrapped at the specified width
      *
-     * @return string Formatted text.
+     * @return string Formatted text
      */
     protected static function _wordWrap($text, $width = 72, $break = "\n", $cut = false)
     {
@@ -928,9 +928,9 @@ class Str
      * - `html` If true, will ignore any HTML tags, ensuring that only the correct text is highlighted
      * - `regex` a custom regex rule that is used to match words, default is '|$tag|iu'
      *
-     * @param string       $text    Text to search the phrase in.
-     * @param string|array $phrase  The phrase or phrases that will be searched.
-     * @param array        $options An array of HTML attributes and options.
+     * @param string       $text    Text to search the phrase in
+     * @param string|array $phrase  The phrase or phrases that will be searched
+     * @param array        $options An array of HTML attributes and options
      *
      * @return string The highlighted text
      *
@@ -998,11 +998,11 @@ class Str
      * - `ellipsis` Will be used as Beginning and prepended to the trimmed string
      * - `exact` If false, $text will not be cut mid-word
      *
-     * @param string $text    String to truncate.
-     * @param int    $length  Length of returned string, including ellipsis.
-     * @param array  $options An array of options.
+     * @param string $text    String to truncate
+     * @param int    $length  Length of returned string, including ellipsis
+     * @param array  $options An array of options
      *
-     * @return string Trimmed string.
+     * @return string Trimmed string
      */
     public static function tail($text, $length = 100, array $options = [])
     {
@@ -1037,11 +1037,11 @@ class Str
      * - `exact` If false, $text will not be cut mid-word
      * - `html` If true, HTML tags would be handled correctly
      *
-     * @param string $text    String to truncate.
-     * @param int    $length  Length of returned string, including ellipsis.
-     * @param array  $options An array of HTML attributes and options.
+     * @param string $text    String to truncate
+     * @param int    $length  Length of returned string, including ellipsis
+     * @param array  $options An array of HTML attributes and options
      *
-     * @return string Trimmed string.
+     * @return string Trimmed string
      *
      * @link http://book.cakephp.org/3.0/en/core-libraries/string.html#truncating-text
      */
@@ -1205,12 +1205,12 @@ class Str
     /**
      * Converts filesize from human readable string to bytes.
      *
-     * @param string $size    Size in human readable string like '5MB', '5M', '500B', '50kb' etc.
+     * @param string $size    Size in human readable string like '5MB', '5M', '500B', '50kb' etc
      * @param mixed  $default Value to be returned when invalid size was used, for example 'Unknown type'
      *
-     * @return mixed Number of bytes as integer on success, `$default` on failure if not false
+     * @throws \InvalidArgumentException On invalid Unit type
      *
-     * @throws \InvalidArgumentException On invalid Unit type.
+     * @return mixed Number of bytes as integer on success, `$default` on failure if not false
      *
      * @link http://book.cakephp.org/3.0/en/core-libraries/helpers/text.html
      */

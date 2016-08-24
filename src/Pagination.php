@@ -6,9 +6,8 @@
  * @link http://github.com/speedwork
  *
  * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * file that was distributed with this source code
  */
-
 namespace Speedwork\Util;
 
 /**
@@ -160,7 +159,7 @@ class Pagination
     {
         $url = preg_replace('#page=([0-9]*)#', 'page='.$find, $this->getTarget());
 
-        $print = ($print) ?  $print : $find;
+        $print = ($print) ? $print : $find;
 
         return '<li><a href="'.$url.'"  data-page="'.$find.'">'.$print.'</a></li>';
     }
