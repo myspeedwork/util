@@ -1,13 +1,14 @@
 <?php
 
-/**
+/*
  * This file is part of the Speedwork package.
  *
- * @link http://github.com/speedwork
+ * (c) Sankar <sankar.suda@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code
  */
+
 namespace Speedwork\Util;
 
 /**
@@ -15,39 +16,6 @@ namespace Speedwork\Util;
  */
 class Utility
 {
-    /**
-     * use this function to destroy directory and their subdirectories and data.
-     **/
-    public function destroyDir($dir, $virtual = false, $removeDir = true)
-    {
-        $ds  = DIRECTORY_SEPARATOR;
-        $dir = $virtual ? realpath($dir) : $dir;
-        $dir = substr($dir, -1) == $ds ? substr($dir, 0, -1) : $dir;
-        if (is_dir($dir) && $handle = opendir($dir)) {
-            while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') {
-                    continue;
-                } elseif (is_dir($dir.$ds.$file)) {
-                    $this->destroyDir($dir.$ds.$file, false, true);
-                } else {
-                    unlink($dir.$ds.$file);
-                }
-            }
-            closedir($handle);
-            if ($removeDir) {
-                rmdir($dir);
-            }
-
-            return true;
-        } elseif (is_file($dir)) {
-            unlink($dir);
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * generate arrribue from key value array.
      *
