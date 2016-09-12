@@ -11,7 +11,7 @@
 
 namespace Speedwork\Util;
 
-use Speedwork\Util\Traits\Macroable;
+use Speedwork\Core\Traits\Macroable;
 
 class Arr
 {
@@ -200,9 +200,11 @@ class Arr
     {
         $return = [];
 
-        array_walk_recursive($array, function ($x) use (&$return) {
-            $return[] = $x;
-        });
+        array_walk_recursive(
+            $array, function ($x) use (&$return) {
+                $return[] = $x;
+            }
+        );
 
         return $return;
     }

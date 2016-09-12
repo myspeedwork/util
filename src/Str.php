@@ -12,7 +12,7 @@
 namespace Speedwork\Util;
 
 use RuntimeException;
-use Speedwork\Util\Traits\Macroable;
+use Speedwork\Core\Traits\Macroable;
 
 class Str
 {
@@ -223,19 +223,6 @@ class Str
     public static function parseCallback($callback, $default)
     {
         return static::contains($callback, '@') ? explode('@', $callback, 2) : [$callback, $default];
-    }
-
-    /**
-     * Get the plural form of an English word.
-     *
-     * @param string $value
-     * @param int    $count
-     *
-     * @return string
-     */
-    public static function plural($value, $count = 2)
-    {
-        return Pluralizer::plural($value, $count);
     }
 
     /**
@@ -600,7 +587,7 @@ class Str
      * corresponds to a variable placeholder name in $str.
      * Example:
      * ```
-     * Text::insert(':name is :age years old.', ['name' => 'Bob', '65']);
+     * Str::insert(':name is :age years old.', ['name' => 'Bob', '65']);
      * ```
      * Returns: Bob is 65 years old.
      *
@@ -611,7 +598,7 @@ class Str
      * - escape: The character or string used to escape the before character / string (Defaults to `\`)
      * - format: A regex to use for matching variable placeholders. Default is: `/(?<!\\)\:%s/`
      *   (Overwrites before, after, breaks escape / clean)
-     * - clean: A boolean or array with instructions for Text::cleanInsert
+     * - clean: A boolean or array with instructions for Str::cleanInsert
      *
      * @param string $str     A string containing variable placeholders
      * @param array  $data    A key => val array where each key stands for a placeholder variable name
@@ -663,8 +650,8 @@ class Str
             $key = sprintf($format, preg_quote($key, '/'));
             $str = preg_replace($key, $hashVal, $str);
         }
-        $dataReplacements = array_combine($hashKeys, array_values($data));
-        foreach ($dataReplacements as $tmpHash => $tmpValue) {
+        $replacements = array_combine($hashKeys, array_values($data));
+        foreach ($replacements as $tmpHash => $tmpValue) {
             $tmpValue = (is_array($tmpValue)) ? '' : $tmpValue;
             $str      = str_replace($tmpHash, $tmpValue, $str);
         }
@@ -677,17 +664,17 @@ class Str
     }
 
     /**
-     * Cleans up a Text::insert() formatted string with given $options depending on the 'clean' key in
+     * Cleans up a Str::insert() formatted string with given $options depending on the 'clean' key in
      * $options. The default method used is text but html is also available. The goal of this function
      * is to replace all whitespace and unneeded markup around placeholders that did not get replaced
-     * by Text::insert().
+     * by Str::insert().
      *
      * @param string $str     String to clean
      * @param array  $options Options list
      *
      * @return string
      *
-     * @see \Cake\Utility\Text::insert()
+     * @see \Speedwork\Util\Str::insert()
      */
     public static function cleanInsert($str, array $options)
     {
@@ -702,44 +689,44 @@ class Str
             $clean = ['method' => $options['clean']];
         }
         switch ($clean['method']) {
-            case 'html':
-                $clean += [
-                    'word'        => '[\w,.]+',
-                    'andText'     => true,
-                    'replacement' => '',
-                ];
-                $kleenex = sprintf(
-                    '/[\s]*[a-z]+=(")(%s%s%s[\s]*)+\\1/i',
-                    preg_quote($options['before'], '/'),
-                    $clean['word'],
-                    preg_quote($options['after'], '/')
-                );
-                $str = preg_replace($kleenex, $clean['replacement'], $str);
-                if ($clean['andText']) {
-                    $options['clean'] = ['method' => 'text'];
-                    $str              = static::cleanInsert($str, $options);
-                }
-                break;
-            case 'text':
-                $clean += [
-                    'word'        => '[\w,.]+',
-                    'gap'         => '[\s]*(?:(?:and|or)[\s]*)?',
-                    'replacement' => '',
-                ];
+        case 'html':
+            $clean += [
+            'word'        => '[\w,.]+',
+            'andText'     => true,
+            'replacement' => '',
+            ];
+            $kleenex = sprintf(
+                '/[\s]*[a-z]+=(")(%s%s%s[\s]*)+\\1/i',
+                preg_quote($options['before'], '/'),
+                $clean['word'],
+                preg_quote($options['after'], '/')
+            );
+            $str = preg_replace($kleenex, $clean['replacement'], $str);
+            if ($clean['andText']) {
+                $options['clean'] = ['method' => 'text'];
+                $str              = static::cleanInsert($str, $options);
+            }
+            break;
+        case 'text':
+            $clean += [
+                'word'        => '[\w,.]+',
+                'gap'         => '[\s]*(?:(?:and|or)[\s]*)?',
+                'replacement' => '',
+            ];
 
-                $kleenex = sprintf(
-                    '/(%s%s%s%s|%s%s%s%s)/',
-                    preg_quote($options['before'], '/'),
-                    $clean['word'],
-                    preg_quote($options['after'], '/'),
-                    $clean['gap'],
-                    $clean['gap'],
-                    preg_quote($options['before'], '/'),
-                    $clean['word'],
-                    preg_quote($options['after'], '/')
-                );
-                $str = preg_replace($kleenex, $clean['replacement'], $str);
-                break;
+            $kleenex = sprintf(
+                '/(%s%s%s%s|%s%s%s%s)/',
+                preg_quote($options['before'], '/'),
+                $clean['word'],
+                preg_quote($options['after'], '/'),
+                $clean['gap'],
+                $clean['gap'],
+                preg_quote($options['before'], '/'),
+                $clean['word'],
+                preg_quote($options['after'], '/')
+            );
+            $str = preg_replace($kleenex, $clean['replacement'], $str);
+            break;
         }
 
         return $str;
@@ -1019,19 +1006,18 @@ class Str
             'ellipsis' => '...', 'exact' => true,
         ];
         $options += $default;
-        extract($options);
 
         if (mb_strlen($text) <= $length) {
             return $text;
         }
 
-        $truncate = mb_substr($text, mb_strlen($text) - $length + mb_strlen($ellipsis));
-        if (!$exact) {
+        $truncate = mb_substr($text, mb_strlen($text) - $length + mb_strlen($options['ellipsis']));
+        if (!$options['exact']) {
             $spacepos = mb_strpos($truncate, ' ');
             $truncate = $spacepos === false ? '' : trim(mb_substr($truncate, $spacepos));
         }
 
-        return $ellipsis.$truncate;
+        return $options['ellipsis'].$truncate;
     }
 
     /**
@@ -1051,8 +1037,6 @@ class Str
      * @param array  $options An array of HTML attributes and options
      *
      * @return string Trimmed string
-     *
-     * @link http://book.cakephp.org/3.0/en/core-libraries/string.html#truncating-text
      */
     public static function truncate($text, $length = 100, array $options = [])
     {
@@ -1118,7 +1102,7 @@ class Str
             }
             $truncate = mb_substr($text, 0, $length - mb_strlen($ellipsis));
         }
-        if (!$exact) {
+        if (!$options['exact']) {
             $spacepos = mb_strrpos($truncate, ' ');
             if ($html) {
                 $truncateCheck = mb_substr($truncate, 0, $spacepos);
@@ -1165,53 +1149,6 @@ class Str
     }
 
     /**
-     * Extracts an excerpt from the text surrounding the phrase with a number of characters on each side
-     * determined by radius.
-     *
-     * @param string $text     String to search the phrase in
-     * @param string $phrase   Phrase that will be searched for
-     * @param int    $radius   The amount of characters that will be returned on each side of the founded phrase
-     * @param string $ellipsis Ending that will be appended
-     *
-     * @return string Modified string
-     *
-     * @link http://book.cakephp.org/3.0/en/core-libraries/string.html#extracting-an-excerpt
-     */
-    public static function excerpt($text, $phrase, $radius = 100, $ellipsis = '...')
-    {
-        if (empty($text) || empty($phrase)) {
-            return static::truncate($text, $radius * 2, ['ellipsis' => $ellipsis]);
-        }
-
-        $append = $prepend = $ellipsis;
-
-        $phraseLen = mb_strlen($phrase);
-        $textLen   = mb_strlen($text);
-
-        $pos = mb_strpos(mb_strtolower($text), mb_strtolower($phrase));
-        if ($pos === false) {
-            return mb_substr($text, 0, $radius).$ellipsis;
-        }
-
-        $startPos = $pos - $radius;
-        if ($startPos <= 0) {
-            $startPos = 0;
-            $prepend  = '';
-        }
-
-        $endPos = $pos + $phraseLen + $radius;
-        if ($endPos >= $textLen) {
-            $endPos = $textLen;
-            $append = '';
-        }
-
-        $excerpt = mb_substr($text, $startPos, $endPos - $startPos);
-        $excerpt = $prepend.$excerpt.$append;
-
-        return $excerpt;
-    }
-
-    /**
      * Converts filesize from human readable string to bytes.
      *
      * @param string $size    Size in human readable string like '5MB', '5M', '500B', '50kb' etc
@@ -1220,8 +1157,6 @@ class Str
      * @throws \InvalidArgumentException On invalid Unit type
      *
      * @return mixed Number of bytes as integer on success, `$default` on failure if not false
-     *
-     * @link http://book.cakephp.org/3.0/en/core-libraries/helpers/text.html
      */
     public static function parseFileSize($size, $default = false)
     {
@@ -1277,5 +1212,53 @@ class Str
     public static function value($value)
     {
         return $value instanceof Closure ? $value() : $value;
+    }
+
+    /**
+     * make name process to store in folders.
+     *
+     * @param [type] $title   [description]
+     * @param string $replace [description]
+     * @param bool   $lower   [description]
+     *
+     * @return [type] [description]
+     */
+    public static function safeName($title, $replace = '-', $lower = true)
+    {
+        // replaces every unwanted character form a string with - ;
+        $arrStupid = ['feat.', 'feat', '.com', '(tm)', ' ', '*', "'s",  '"', ',', ':', ';', '@', '#', '(', ')', '?', '!', '_',
+                             '$', '+', '=', '|', "'", '/', '~', '`s', '`', '\\', '^', '[', ']', '{', '}', '<', '>', '%', '.', ];
+
+        $title = htmlentities($title);
+        $title = str_replace($arrStupid, ' ', $title);
+        $title = preg_replace('/[\s\W]+/', $replace, $title);    // Strip off spaces and non-alpha-numeric
+
+        $title = preg_replace('/\%/', ' ', $title);
+        $title = preg_replace('/\@/', ' at ', $title);
+        $title = preg_replace('/\&/', ' and ', $title);
+        $title = preg_replace('/\s[\s]+/', '-', $title);    // Strip off multiple spaces
+        $title = preg_replace('/^[\-]+/', '', $title); // Strip off the starting hyphens
+        $title = preg_replace('/[\-]+$/', '', $title); // // Strip off the ending hyphens
+
+        if ($lower) {
+            $title = strtolower($title);
+        }
+
+        return trim($title);
+    }
+
+    /**
+     * safe the filename with removing the extension.
+     *
+     * @param [type] $title [description]
+     *
+     * @return [type] [description]
+     */
+    public static function safeFile($title)
+    {
+        $ext   = strrchr($title, '.');
+        $title = rtrim($title, $ext);
+
+        return $this->safeName($title);
     }
 }

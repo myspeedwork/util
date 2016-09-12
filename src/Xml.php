@@ -11,6 +11,7 @@
 
 namespace Speedwork\Util;
 
+use Speedwork\Core\Traits\Macroable;
 use StdClass;
 
 /**
@@ -18,6 +19,8 @@ use StdClass;
  */
 class Xml
 {
+    use Macroable;
+
     public static function build($data, $block = 'nodes', $name = 'node')
     {
         if (is_array($data)) {

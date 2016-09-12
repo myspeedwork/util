@@ -11,11 +11,15 @@
 
 namespace Speedwork\Util;
 
+use Speedwork\Core\Traits\Macroable;
+
 /**
  * @author sankar <sankar.suda@gmail.com>
  */
 class Utility
 {
+    use Macroable;
+
     /**
      * generate arrribue from key value array.
      *
@@ -41,54 +45,6 @@ class Utility
     }
 
     /**
-     * make name process to store in folders.
-     *
-     * @param [type] $title   [description]
-     * @param string $replace [description]
-     * @param bool   $lower   [description]
-     *
-     * @return [type] [description]
-     */
-    public static function safename($title, $replace = '-', $lower = true)
-    {
-        // replaces every unwanted character form a string with - ;
-        $arrStupid = ['feat.', 'feat', '.com', '(tm)', ' ', '*', "'s",  '"', ',', ':', ';', '@', '#', '(', ')', '?', '!', '_',
-                             '$', '+', '=', '|', "'", '/', '~', '`s', '`', '\\', '^', '[', ']', '{', '}', '<', '>', '%', '.', ];
-
-        $title = htmlentities($title);
-        $title = str_replace($arrStupid, ' ', $title);
-        $title = preg_replace('/[\s\W]+/', $replace, $title);    // Strip off spaces and non-alpha-numeric
-
-        $title = preg_replace('/\%/', ' ', $title);
-        $title = preg_replace('/\@/', ' at ', $title);
-        $title = preg_replace('/\&/', ' and ', $title);
-        $title = preg_replace('/\s[\s]+/', '-', $title);    // Strip off multiple spaces
-        $title = preg_replace('/^[\-]+/', '', $title); // Strip off the starting hyphens
-        $title = preg_replace('/[\-]+$/', '', $title); // // Strip off the ending hyphens
-
-        if ($lower) {
-            $title = strtolower($title);
-        }
-
-        return trim($title);
-    }
-
-    /**
-     * safe the filename with removing the extension.
-     *
-     * @param [type] $title [description]
-     *
-     * @return [type] [description]
-     */
-    public static function safefile($title)
-    {
-        $ext   = strrchr($title, '.');
-        $title = rtrim($title, $ext);
-
-        return $this->safename($title);
-    }
-
-    /**
      * helper function to validate emall address.
      *
      * @param [type] $email [description]
@@ -98,47 +54,6 @@ class Utility
     public static function isRealEmail($email)
     {
         return (bool) (preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $email));
-    }
-
-    /**
-     * generate randone code based on lenght given.
-     *
-     * @param int $characters [description]
-     *
-     * @return string [description]
-     */
-    public function generateCode($characters)
-    {
-        /* list all possible characters, similar looking characters and vowels have been removed */
-        $possible = '0123456789bcdfghjkmnpqrstvwxyz';
-        $code     = '';
-        $i        = 0;
-        while ($i < $characters) {
-            $code .= substr($possible, mt_rand(0, strlen($possible) - 1), 1);
-            ++$i;
-        }
-
-        return $code;
-    }
-
-    /**
-     * [fewchars description].
-     *
-     * @param [type] $s      [description]
-     * @param [type] $lenght [description]
-     *
-     * @return [type] [description]
-     */
-    public static function fewchars($s, $lenght)
-    {
-        $count = strip_tags($s);
-        if (strlen($count) <= $lenght) {
-            return $s;
-        }
-        $s2 = mb_substr($count, 0, $lenght - 3, 'utf-8');
-        $s2 .= '...';
-
-        return $s2;
     }
 
     public static function currentUrl()
@@ -164,13 +79,14 @@ class Utility
             $path_parts = pathinfo($fullPath);
             $ext        = strtolower($path_parts['extension']);
             switch ($ext) {
-                case 'pdf':
-                    header('Content-type: application/pdf'); // add here more headers for diff. extensions
-                    header('Content-Disposition: attachment; filename="'.$path_parts['basename'].'"'); // use 'attachment' to force a download
-                    break;
-                default:
-                    header('Content-type: application/octet-stream');
-                    header('Content-Disposition: filename="'.$path_parts['basename'].'"');
+            case 'pdf':
+                header('Content-type: application/pdf'); // add here more headers for diff. extensions
+                header('Content-Disposition: attachment; filename="'.$path_parts['basename'].'"'); // use 'attachment' to force a download
+                break;
+            default:
+                header('Content-type: application/octet-stream');
+                header('Content-Disposition: filename="'.$path_parts['basename'].'"');
+                break;
             }
             header("Content-length: $fsize");
             header('Cache-control: private'); //use this to open files directly
@@ -359,6 +275,15 @@ class Utility
         return array_unique($dates);
     }
 
+    /**
+     * Joining multiple files.
+     *
+     * @param array  $files  [description]
+     * @param string $result [description]
+     * @param bool   $delete [description]
+     *
+     * @return [type] [description]
+     */
     public static function joinFiles(array $files, $result, $delete = false)
     {
         if (!is_array($files)) {
@@ -399,5 +324,7 @@ class Utility
         }
         fclose($wH);
         unset($wH);
+
+        return true;
     }
 }
