@@ -11,6 +11,7 @@
 
 namespace Speedwork\Util;
 
+use Closure;
 use InvalidArgumentException;
 use RuntimeException;
 use Speedwork\Core\Traits\Macroable;

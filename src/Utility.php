@@ -11,6 +11,7 @@
 
 namespace Speedwork\Util;
 
+use Exception;
 use Speedwork\Core\Traits\Macroable;
 
 /**
